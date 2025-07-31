@@ -5,7 +5,7 @@ class TurnoCard extends StatelessWidget {
   final String fecha;
 
   const TurnoCard({
-    super.key, 
+    super.key,
     required this.paciente,
     required this.fecha,
   });
@@ -17,8 +17,9 @@ class TurnoCard extends StatelessWidget {
       child: ListTile(
         leading: const Icon(Icons.calendar_today),
         title: Text(paciente),
-        subtitle: Text('Fecha: $fecha'),
+        subtitle: Text(fecha),
       ),
     );
   }
 }
+
