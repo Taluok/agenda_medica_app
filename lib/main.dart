@@ -13,7 +13,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Agenda Médica',
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(), // No const aquí porque HomeScreen no es const
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF3A86FF)),
+        useMaterial3: true,
+      ),
+      home: const HomeScreen(),
     );
   }
 }
+
