@@ -1,13 +1,12 @@
 class Turno {
-  final String id;
   final String paciente;
-  final DateTime fecha;
-  final String especialidad;
+  final String fecha;
+  final String hora;
 
   Turno({
-    required this.id,
     required this.paciente,
     required this.fecha,
-    required this.especialidad,
+    required this.hora,
   });
 }
+
