@@ -17,22 +17,22 @@ class DetalleTurnoScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           elevation: 4,
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.person, size: 50, color: Colors.blueAccent),
+                Text('Paciente: ${turno.paciente}', style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 10),
-                Text(turno.paciente, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 10),
-                Text('📅 Fecha: ${turno.fecha}', style: const TextStyle(fontSize: 16)),
-                Text('⏰ Hora: ${turno.hora}', style: const TextStyle(fontSize: 16)),
-                const Divider(height: 30),
-                const Text('Aquí podrías agregar la historia clínica, notas, recetas, etc.',
-                    style: TextStyle(color: Colors.grey)),
+                Text('DNI: ${turno.dni ?? "No informado"}'),
+                Text('Fecha: ${turno.fecha}'),
+                Text('Hora: ${turno.hora}'),
+                Text('Especialidad: ${turno.especialidad}'),
+                const SizedBox(height: 20),
+                const Text('Observaciones:', style: TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 6),
+                Text(turno.observaciones ?? 'Sin observaciones'),
               ],
             ),
           ),
@@ -41,3 +41,4 @@ class DetalleTurnoScreen extends StatelessWidget {
     );
   }
 }
+
