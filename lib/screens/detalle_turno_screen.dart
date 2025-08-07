@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/turno.dart';
+import 'package:intl/intl.dart';
 
 class DetalleTurnoScreen extends StatelessWidget {
   final Turno turno;
@@ -26,8 +27,8 @@ class DetalleTurnoScreen extends StatelessWidget {
                 Text('Paciente: ${turno.paciente}', style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 10),
                 Text('DNI: ${turno.dni ?? "No informado"}'),
-                Text('Fecha: ${turno.fecha}'),
-                Text('Hora: ${turno.hora}'),
+                Text("Fecha: ${DateFormat('dd/MM/yyyy').format(turno.fechaHora)}"),
+                Text("Hora: ${DateFormat('HH:mm').format(turno.fechaHora)}"),
                 Text('Especialidad: ${turno.especialidad}'),
                 const SizedBox(height: 20),
                 const Text('Observaciones:', style: TextStyle(fontWeight: FontWeight.bold)),

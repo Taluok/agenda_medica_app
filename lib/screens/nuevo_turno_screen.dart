@@ -12,8 +12,8 @@ class _NuevoTurnoScreenState extends State<NuevoTurnoScreen> {
   final _formKey = GlobalKey<FormState>();
 
   String _paciente = '';
-  String _fecha = '';
-  String _hora = '';
+  DateTime? _fechaSeleccionada;
+  TimeOfDay? _horaSeleccionada;
   String _especialidad = 'General';
 
   final List<String> especialidades = [
@@ -33,7 +33,7 @@ class _NuevoTurnoScreenState extends State<NuevoTurnoScreen> {
     );
     if (picked != null) {
       setState(() {
-        _fecha = '${picked.day}/${picked.month}/${picked.year}';
+        _fechaSeleccionada = picked;
       });
     }
   }
@@ -45,25 +45,43 @@ class _NuevoTurnoScreenState extends State<NuevoTurnoScreen> {
     );
     if (picked != null) {
       setState(() {
-        _hora = picked.format(context);
+        _horaSeleccionada = picked;
       });
     }
   }
 
   void _guardarTurno() {
-    if (_formKey.currentState!.validate() && _fecha.isNotEmpty && _hora.isNotEmpty) {
+    if (_formKey.currentState!.validate() &&
+        _fechaSeleccionada != null &&
+        _horaSeleccionada != null) {
+      final DateTime fechaHora = DateTime(
+        _fechaSeleccionada!.year,
+        _fechaSeleccionada!.month,
+        _fechaSeleccionada!.day,
+        _horaSeleccionada!.hour,
+        _horaSeleccionada!.minute,
+      );
+
       final nuevoTurno = Turno(
         paciente: _paciente,
-        fecha: _fecha,
-        hora: _hora,
+        fechaHora: fechaHora,
         especialidad: _especialidad,
       );
+
       Navigator.pop(context, nuevoTurno);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Por favor completá todos los campos')),
       );
     }
+  }
+
+  String _formatearFecha(DateTime fecha) {
+    return '${fecha.day}/${fecha.month}/${fecha.year}';
+  }
+
+  String _formatearHora(TimeOfDay hora) {
+    return hora.format(context);
   }
 
   @override
@@ -91,7 +109,9 @@ class _NuevoTurnoScreenState extends State<NuevoTurnoScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      _fecha.isEmpty ? 'Seleccionar fecha' : 'Fecha: $_fecha',
+                      _fechaSeleccionada == null
+                          ? 'Seleccionar fecha'
+                          : 'Fecha: ${_formatearFecha(_fechaSeleccionada!)}',
                     ),
                   ),
                   IconButton(
@@ -105,7 +125,9 @@ class _NuevoTurnoScreenState extends State<NuevoTurnoScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      _hora.isEmpty ? 'Seleccionar hora' : 'Hora: $_hora',
+                      _horaSeleccionada == null
+                          ? 'Seleccionar hora'
+                          : 'Hora: ${_formatearHora(_horaSeleccionada!)}',
                     ),
                   ),
                   IconButton(

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'nuevo_turno_screen.dart';
 import '../models/turno.dart';
-import 'detalle_turno_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,33 +10,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Turno> _turnos = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _cargarTurnos();
-  }
-
-  Future<void> _cargarTurnos() async {
-    final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getStringList('turnos') ?? [];
-    setState(() {
-      _turnos = data.map((e) => Turno.fromJson(jsonDecode(e))).toList();
-    });
-  }
-
-  Future<void> _guardarTurnos() async {
-    final prefs = await SharedPreferences.getInstance();
-    final data = _turnos.map((t) => jsonEncode(t.toJson())).toList();
-    await prefs.setStringList('turnos', data);
-  }
+  final List<Turno> _turnos = [];
 
   void _agregarTurno(Turno nuevoTurno) {
     setState(() {
       _turnos.add(nuevoTurno);
     });
-    _guardarTurnos();
+  }
+
+  // 👇 Función para determinar el color del turno
+  Color _obtenerColorTurno(DateTime fechaHora) {
+    final ahora = DateTime.now();
+
+    if (fechaHora.isBefore(DateTime(ahora.year, ahora.month, ahora.day))) {
+      return Colors.grey.shade400; // Pasado
+    } else if (fechaHora.year == ahora.year &&
+        fechaHora.month == ahora.month &&
+        fechaHora.day == ahora.day) {
+      return Colors.blue.shade100; // Hoy
+    } else {
+      return Colors.green.shade100; // Futuro
+    }
   }
 
   @override
@@ -48,31 +38,28 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Agenda Médica'),
-        backgroundColor: const Color(0xFF3A86FF),
-        foregroundColor: Colors.white,
       ),
       body: _turnos.isEmpty
-          ? const Center(
-              child: Text('No hay turnos cargados'),
-            )
+          ? const Center(child: Text('No hay turnos cargados'))
           : ListView.builder(
               itemCount: _turnos.length,
               itemBuilder: (context, index) {
                 final turno = _turnos[index];
+                final color = _obtenerColorTurno(turno.fechaHora); // 👈 nuevo
+
                 return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  color: color,
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 5.0),
                   child: ListTile(
                     title: Text(turno.paciente),
-                    subtitle: Text('Fecha: ${turno.fecha} - Hora: ${turno.hora}'),
+                    subtitle: Text(
+                      'Fecha: ${turno.fechaHora.day}/${turno.fechaHora.month}/${turno.fechaHora.year} - '
+                      'Hora: ${turno.fechaHora.hour.toString().padLeft(2, '0')}:${turno.fechaHora.minute.toString().padLeft(2, '0')}',
+                    ),
                     leading: const Icon(Icons.calendar_today),
-                    trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetalleTurnoScreen(turno: turno),
-                        ),
-                      );
+                      // Aquí podés ir a la ficha clínica o detalle del turno
                     },
                   ),
                 );
